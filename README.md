@@ -3,8 +3,7 @@
 > and then migrate the prisma using `npm run generate` from the front end.
 > Start the app
 before running the 
-## 1 
-run the backend
+## 1 run the backend
 ```js
 npm i 
 npm run dev
