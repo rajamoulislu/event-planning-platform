@@ -11,7 +11,7 @@ npm run dev
 
 ## 2 run the front end
 ```js
-npm i --force 
+npm i
 npm run build
 npm start 
 ```

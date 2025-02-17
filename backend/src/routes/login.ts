@@ -1,16 +1,12 @@
 
 // src/routes/login.ts
-import express, { Request, Response, Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import prisma from '../../../frontend/src/prisma/PrismaCilent';
+import { LoginRequest } from '@/interface';
+import express, { Request, Response, Router } from 'express';
+import prisma from '../../../frontend/src/prisma/PrismaClient';
 
 const router: Router = express.Router();
-
-interface LoginRequest {
-    email: string;
-    password: string;
-}
 
 router.post('/', (req: Request<{}, {}, LoginRequest>, res: Response) => {
     const handleLogin = async () => {

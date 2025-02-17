@@ -1,0 +1,46 @@
+.container {
+    min-height: 100vh;
+    background-color: rgb(249, 250, 251);
+    padding: 2rem;
+}
+
+.wrapper {
+    max-width: 56rem;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 1.875rem;
+    font-weight: 700;
+}
+
+.logoutButton {
+    padding: 0.5rem 1rem;
+    background-color: rgb(220, 38, 38);
+    color: white;
+    border-radius: 0.25rem;
+}
+
+.logoutButton:hover {
+    background-color: rgb(185, 28, 28);
+}
+
+.content {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.contentTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}

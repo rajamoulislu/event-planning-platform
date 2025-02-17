@@ -1,76 +1,72 @@
-// src/components/LoginForm.tsx
+'use client';
+
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
-axios.defaults.baseURL = 'http://localhost:5000';
+import styles from '@/css/Login.module.css';
 
-
-const LoginForm = () => {
+export default function Login() {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate();
-    console.log(email, password)
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/login', { email, password });
+            const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
             const { token } = response.data;
             localStorage.setItem('token', token);
-            navigate('/dashboard');
-        } catch (err) {
+            router.replace('/dashboard');
+        } catch (error) {
             setError('Invalid credentials');
+            return error
         }
     };
-
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-                <h2 className="text-center text-3xl font-bold">Sign in to your account</h2>
-                {error && <div className="text-red-500 text-center">{error}</div>}
-                <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <div className={styles.container}>
+            <div className={styles.formContainer}>
+                <h2 className={styles.title}>Sign in to your account</h2>
+                {error && <div className={styles.error}>{error}</div>}
+                <form onSubmit={handleSubmit} className={styles.form}>
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium">
-                            Email address
-                        </label>
                         <input
                             id="email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            className="mt-1 block w-full rounded-md border border-gray-300 p-2"
+                            className={styles.input}
+                            placeholder='Email address'
                         />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium">
-                            Password
-                        </label>
                         <input
                             id="password"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            className="mt-1 block w-full rounded-md border border-gray-300 p-2"
+                            className={styles.input}
+                            placeholder='Password'
                         />
                     </div>
                     <button
                         type="submit"
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                        className={styles.submitButton}
                     >
                         Sign in
                     </button>
                 </form>
-
-                <div className="text-center mt-4">
-                    <Link to="/register" className="text-blue-600 hover:text-blue-800">
-                        Dont have an account? Register
-                    </Link>
+                <div className={styles.registerContainer}>
+                    <button
+                        onClick={() => router.push('/register')}
+                        className={styles.registerLink}
+                    >
+                        Don&apos;t have an account? Register
+                    </button>
                 </div>
             </div>
         </div>
     );
-};
-
-export default LoginForm;
+}

@@ -1,14 +1,10 @@
 // src/routes/register.ts
-import express, { Request, Response, Router } from 'express';
 import bcrypt from 'bcryptjs';
-import prisma from '../../../frontend/src/prisma/PrismaCilent';
+import { RegisterRequest } from '@/interface';
+import express, { Request, Response, Router } from 'express';
+import prisma from '../../../frontend/src/prisma/PrismaClient';
 
 const router: Router = express.Router();
-
-interface RegisterRequest {
-    email: string;
-    password: string;
-}
 
 router.post('/', (req: Request<{}, {}, RegisterRequest>, res: Response) => {
     const handleRegister = async () => {
