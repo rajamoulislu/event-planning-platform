@@ -4,14 +4,13 @@
 > Start the app
 before running the 
 ## 1 run the backend
-```js
+```bash
 npm i 
 npm run dev
 ```
 
 ## 2 run the front end
-```js
+```bash
 npm i
-npm run build
-npm start 
+npm run dev
 ```
