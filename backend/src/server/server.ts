@@ -3,6 +3,7 @@ import cors from 'cors';
 import { authenticateToken } from '../middleware/auth';
 import loginRouter from '../routes/login';
 import registerRouter from '../routes/register';
+import verifyRouter from '../routes/verify'; // Import the new router
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -12,9 +13,9 @@ const port = process.env.PORT || 5000;
 
 // CORS configuration
 const corsOptions = {
-    origin: 'http://localhost:3001', // Your frontend URL
+    origin: process.env.FRONTEND_URI,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
     credentials: true
 };
 
@@ -25,11 +26,12 @@ app.use(express.json());
 // Add options preflight for all routes
 app.options('*', cors(corsOptions));
 
-// Public routes
-app.use('/api/auth/login', loginRouter);
+// Routes
 app.use('/api/auth/register', registerRouter);
+app.use('/api/auth/login', loginRouter);
+app.use('/api/verify-token', verifyRouter); // Use the new router
 
-// Protected route
+// Protected routes
 app.get('/api/protected', authenticateToken, (req: Request, res: Response) => {
     res.json({ message: 'This is a protected route' });
 });

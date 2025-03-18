@@ -1,5 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { checkIfUserLoggedIn } from '@/utils';
 import styles from '@/css/Dashboard.module.css';
 
 export default function Dashboard() {
@@ -10,15 +11,14 @@ export default function Dashboard() {
         router.push('/');
     };
 
+    checkIfUserLoggedIn()
+
     return (
         <div className={styles.container}>
             <div className={styles.wrapper}>
                 <div className={styles.header}>
                     <h1 className={styles.title}>Dashboard</h1>
-                    <button
-                        onClick={handleLogout}
-                        className={styles.logoutButton}
-                    >
+                    <button onClick={handleLogout} className={styles.logoutButton} >
                         Logout
                     </button>
                 </div>

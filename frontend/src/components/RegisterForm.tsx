@@ -1,8 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from '@/css/RegisterForm.module.css';
 import { useRouter } from 'next/navigation';
+import { checkIfUserLoggedIn } from '@/utils';
 
 export default function RegisterForm() {
     const [email, setEmail] = useState('');
@@ -10,11 +11,20 @@ export default function RegisterForm() {
     const [error, setError] = useState('');
     const router = useRouter();
 
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            const checkLogin = await checkIfUserLoggedIn();
+            if (checkLogin?.isLoggedIn) router.push('/dashboard')
+        };
+
+        checkLoginStatus()
+
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/auth/register', { email, password });
+            await axios.post(process.env.NEXT_PUBLIC_FRONTEND_URI + '/api/auth/register', { email, password });
             router.push('/login');
         } catch (err) {
             if (axios.isAxiosError(err)) {

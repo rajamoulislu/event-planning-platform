@@ -13,7 +13,7 @@ router.post('/', (req: Request<{}, {}, RegisterRequest>, res: Response) => {
 
             if (!email || !password) {
                 return res.status(400).json({ error: 'Email and password are required' });
-            }
+            } 
 
             const existingUser = await prisma.user.findUnique({
                 where: { email },

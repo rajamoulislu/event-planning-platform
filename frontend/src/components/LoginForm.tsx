@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import styles from '@/css/Login.module.css';
+import { checkIfUserLoggedIn } from '@/utils';
 
 export default function Login() {
     const router = useRouter();
@@ -11,10 +12,19 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            const checkLogin = await checkIfUserLoggedIn();
+            if (checkLogin?.isLoggedIn) router.push('/dashboard')
+        };
+
+        checkLoginStatus()
+
+    }, []);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            const response = await axios.post(process.env.NEXT_PUBLIC_FRONTEND_URI + '/api/auth/login', { email, password });
             const { token } = response.data;
             localStorage.setItem('token', token);
             router.replace('/dashboard');
