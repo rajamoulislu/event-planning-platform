@@ -30,10 +30,20 @@ interface RegisterResponse {
     };
 }
 
+interface Event {
+    id: number;
+    title: string;
+    description: string;
+    createdAt: string;
+    guests?: number;
+    _count?: {
+        guests: number;
+    };
+}
 
 interface AuthLayoutProps {
     children: ReactNode;
     requireAuth?: boolean;
 }
 
-export type { LoginRequestBody, LoginResponse, RegisterRequestBody, RegisterResponse, AuthLayoutProps };
+export type { LoginRequestBody, LoginResponse, RegisterRequestBody, RegisterResponse, AuthLayoutProps, Event };

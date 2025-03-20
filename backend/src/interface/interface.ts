@@ -13,7 +13,10 @@ interface RegisterRequest {
 }
 
 interface AuthenticatedRequest extends Request {
-    user?: JwtPayload | string;
+    user: {
+        userId: number; 
+        email?: string;
+    }
 }
 
 export { LoginRequest, RegisterRequest, AuthenticatedRequest }

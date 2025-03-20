@@ -1,8 +1,7 @@
 'use client';
 import { useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
 import { AuthLayoutProps } from '@/interface';
-
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function AuthLayout({ children, requireAuth = true }: AuthLayoutProps) {
     const router = useRouter();

@@ -1,8 +1,9 @@
 'use client'
-import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import styles from '@/css/HomePage.module.css';
 import { checkIfUserLoggedIn } from '@/utils';
+import styles from '@/css/HomePage.module.css';
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function HomePage() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,16 +20,16 @@ export default function HomePage() {
         checkLoginStatus();
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function (this: HTMLAnchorElement, e: Event) {
                 e.preventDefault();
                 const targetId = this.getAttribute('href');
-                console.log(targetId)
+
                 if (targetId === "#") {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
+                    window.scrollTo({ top: 0, behavior: 'auto' } as ScrollToOptions);
+                } else if (targetId) {
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
-                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                        targetElement.scrollIntoView({ behavior: 'auto' });
                     }
                 }
             });
@@ -96,7 +97,7 @@ export default function HomePage() {
                     ) : (
                         <div className={styles.actionButtons}>
                             <div className={styles.group} onClick={toggleSidebar}>
-                                <img className={styles.userRoundedImg} src="/usericon.png" alt="User Icon" />
+                                    <Image className={styles.userRoundedImg} src="/usericon.png" alt="User Icon" width={40} height={40}/>
                             </div>
                         </div>
                     )}
@@ -170,7 +171,7 @@ export default function HomePage() {
                         {/* <button className={styles.ctaButton}>Get Started</button> */}
                     </div>
                     <div className={`${styles.heroImageContainer} ${styles.floatingAnimation}`}>
-                        <img src="/emapp.png" alt="Hero" className={`${styles.heroImage} ${styles.enhancedShadow}`} />
+                        <Image src="/emapp.png" alt="Hero" className={`${styles.heroImage} ${styles.enhancedShadow}`} width={800} height={600} priority />
                     </div>
                 </div>
             </section>
@@ -207,7 +208,7 @@ export default function HomePage() {
                         ].map((dev, index) => (
                             <div key={index} className={`${styles.devCard} ${styles.elevatedCard}`}>
                                 <div className={styles.devHeader}>
-                                    <img src={dev.avatar} alt={dev.name} className={styles.devAvatar} />
+                                    <Image src={dev.avatar} alt={dev.name} className={styles.devAvatar} width={60} height={60} />
                                     <div>
                                         <h3 className={styles.devName}>{dev.name}</h3>
                                         <p className={styles.devRole}>{dev.role}</p>

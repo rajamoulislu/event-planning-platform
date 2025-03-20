@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
-
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
 import styles from '@/css/Login.module.css';
 import { checkIfUserLoggedIn } from '@/utils';
 
@@ -11,16 +11,25 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const checkLoginStatus = async () => {
-            const checkLogin = await checkIfUserLoggedIn();
-            if (checkLogin?.isLoggedIn) router.push('/dashboard')
+            try {
+                const checkLogin = await checkIfUserLoggedIn();
+                if (checkLogin?.isLoggedIn) {
+                    router.push('/dashboard');
+                } else {
+                    setIsLoading(false);
+                }
+            } catch (error) {
+                setIsLoading(false);
+            }
         };
 
-        checkLoginStatus()
+        checkLoginStatus();
+    }, [router]);
 
-    }, []);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -33,6 +42,18 @@ export default function Login() {
             return error
         }
     };
+
+
+    if (isLoading) {
+        return (
+            <div className={styles.container}>
+                <div className={styles.loading}>
+                    <span className="loader"></span>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.formContainer}>
