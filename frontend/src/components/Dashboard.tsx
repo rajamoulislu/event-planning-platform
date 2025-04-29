@@ -46,12 +46,12 @@ export default function Dashboard() {
         router.push(`/events/${event.id}`);
     };
 
-
-    const createEvent = async (title: string, description: string) => {
+    // Updated to accept all event data fields
+    const createEvent = async (eventData: any) => {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.post('/api/events',
-                { title, description },
+                eventData,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -80,9 +80,9 @@ export default function Dashboard() {
                     src="/main.jpg"
                     alt="Event Banner"
                     className={styles.heroImage}
-                    width={1200}  
-                    height={400}  
-                    priority      
+                    width={1200}
+                    height={400}
+                    priority
                 />
                 <div className={styles.heroText}>
                     <h2>Plan Your Events with Elegance</h2>
@@ -111,9 +111,16 @@ export default function Dashboard() {
                                 key={event.id}
                                 className={styles.eventCard}
                                 onClick={() => openEventDetails(event)}
+                                style={event.color ? { borderLeft: `5px solid ${event.color}` } : {}}
                             >
                                 <h3>{event.title}</h3>
                                 <p>{event.description}</p>
+                                {event.startDate && (
+                                    <p className={styles.eventDate}>
+                                        📅 {new Date(event.startDate).toLocaleDateString()}
+                                        {event.isAllDay ? ' (All day)' : ''}
+                                    </p>
+                                )}
                                 <div className={styles.eventCardFooter}>
                                     <span>{new Date(event.createdAt).toLocaleDateString()}</span>
                                     <span>{event._count?.guests || 0} guests</span>
@@ -140,16 +147,32 @@ export default function Dashboard() {
     );
 }
 
-// Create Event Modal Component
+// Create Event Modal Component - Updated with required fields
 function CreateEventModal({ onClose, onCreate }: any) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [location, setLocation] = useState('');
+    const [url, setUrl] = useState('');
+    const [isAllDay, setIsAllDay] = useState(false);
+    const [color, setColor] = useState('#3788d8');
 
-    const handleSubmit = (e:any) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
-        if (title.trim()) {
-            onCreate(title, description);
-        }
+        if (!title || !startDate) return;
+
+        // Send all event data to the create function
+        onCreate({
+            title,
+            description,
+            startDate,
+            endDate: endDate || null,
+            location,
+            url,
+            isAllDay,
+            color
+        });
     };
 
     return (
@@ -162,7 +185,7 @@ function CreateEventModal({ onClose, onCreate }: any) {
 
                 <form onSubmit={handleSubmit} className={styles.createEventForm}>
                     <div className={styles.formGroup}>
-                        <label htmlFor="title">Event Title</label>
+                        <label htmlFor="title">Event Title *</label>
                         <input
                             type="text"
                             id="title"
@@ -180,8 +203,76 @@ function CreateEventModal({ onClose, onCreate }: any) {
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Enter event description"
-                            rows={5}
+                            rows={3}
                         />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label htmlFor="startDate">Start Date *</label>
+                        <input
+                            type="date"
+                            id="startDate"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label htmlFor="endDate">End Date</label>
+                        <input
+                            type="date"
+                            id="endDate"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label htmlFor="location">Location</label>
+                        <input
+                            type="text"
+                            id="location"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            placeholder="Enter event location"
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label htmlFor="url">URL</label>
+                        <input
+                            type="url"
+                            id="url"
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                            placeholder="Enter event URL"
+                        />
+                    </div>
+
+                    <div className={styles.formRow}>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="color">Color</label>
+                            <input
+                                type="color"
+                                id="color"
+                                value={color}
+                                onChange={(e) => setColor(e.target.value)}
+                                className={styles.colorPicker}
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label className={styles.checkboxLabel}>
+                                <input
+                                    type="checkbox"
+                                    id="isAllDay"
+                                    checked={isAllDay}
+                                    onChange={(e) => setIsAllDay(e.target.checked)}
+                                />
+                                <span>All Day Event</span>
+                            </label>
+                        </div>
                     </div>
 
                     <div className={styles.modalFooter}>

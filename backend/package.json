@@ -22,7 +22,6 @@
     "nodemon": "^3.1.9",
     "prisma": "^6.3.1",
     "tslib": "^2.8.1"
-   
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

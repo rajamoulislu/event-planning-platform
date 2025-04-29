@@ -16,6 +16,17 @@ export default function GuestListPage() {
     const eventId = params.id;
     const [event, setEvent] = useState<Event | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isEditingEvent, setIsEditingEvent] = useState(false);
+
+    // Event form state
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [location, setLocation] = useState('');
+    const [url, setUrl] = useState('');
+    const [isAllDay, setIsAllDay] = useState(false);
+    const [color, setColor] = useState('');
 
     useEffect(() => {
         if (eventId) {
@@ -40,6 +51,55 @@ export default function GuestListPage() {
         }
     };
 
+    const startEditingEvent = () => {
+        if (event) {
+            setTitle(event.title);
+            setDescription(event.description || '');
+            setStartDate(event.startDate ? new Date(event.startDate).toISOString().split('T')[0] : '');
+            setEndDate(event.endDate ? new Date(event.endDate).toISOString().split('T')[0] : '');
+            setLocation(event.location || '');
+            setUrl(event.url || '');
+            setIsAllDay(event.isAllDay || false);
+            setColor(event.color || '');
+            setIsEditingEvent(true);
+        }
+    };
+
+    const cancelEditingEvent = () => {
+        setIsEditingEvent(false);
+    };
+
+    const updateEvent = async () => {
+        if (!title || !startDate) return;
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.put(
+                `/api/events/${eventId}`,
+                {
+                    title,
+                    description,
+                    startDate,
+                    endDate: endDate || null,
+                    location,
+                    url,
+                    isAllDay,
+                    color
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            setEvent(response.data);
+            setIsEditingEvent(false);
+        } catch (error) {
+            console.error('Error updating event:', error);
+        }
+    };
+
     if (isLoading) {
         return (
             <div className={styles.loading}>
@@ -58,23 +118,131 @@ export default function GuestListPage() {
                     ← Back to Event
                 </button>
                 <h1 className={styles.title}>{event.title} - Guest List</h1>
+                {/* <button onClick={startEditingEvent} className={styles.editButton}>
+                    ✏️ Edit Event
+                </button> */}
             </div>
 
+            {isEditingEvent && (
+                <div className={styles.eventEditForm}>
+                    <h3>Edit Event Details</h3>
+                    <div className={styles.formGrid}>
+                        <div className={styles.formGroup}>
+                            <label>Title *</label>
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className={styles.inputField}
+                                required
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label>Description</label>
+                            <textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                className={styles.textareaField}
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label>Start Date *</label>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className={styles.inputField}
+                                required
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label>End Date</label>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className={styles.inputField}
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label>Location</label>
+                            <input
+                                type="text"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                className={styles.inputField}
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label>URL</label>
+                            <input
+                                type="url"
+                                value={url}
+                                onChange={(e) => setUrl(e.target.value)}
+                                className={styles.inputField}
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label>Color</label>
+                            <input
+                                type="color"
+                                value={color}
+                                onChange={(e) => setColor(e.target.value)}
+                                className={styles.colorField}
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label className={styles.checkboxLabel}>
+                                <input
+                                    type="checkbox"
+                                    checked={isAllDay}
+                                    onChange={(e) => setIsAllDay(e.target.checked)}
+                                    className={styles.checkboxField}
+                                />
+                                All Day Event
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className={styles.formActions}>
+                        <button
+                            onClick={updateEvent}
+                            className={`${styles.button} ${styles.saveButton}`}
+                        >
+                            💾 Save Changes
+                        </button>
+                        <button
+                            onClick={cancelEditingEvent}
+                            className={`${styles.button} ${styles.cancelButton}`}
+                        >
+                            ✕ Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <div className={styles.contentContainer}>
-                <GuestList eventId={eventId} />
+                <GuestList eventId={eventId as string} />
             </div>
         </div>
     );
 }
 
 // Guest List component
-function GuestList({ eventId }: any) {
+function GuestList({ eventId }: { eventId: string }) {
     const [guests, setGuests] = useState<Guest[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+    const [name, setName] = useState('');
     const [image, setImage] = useState<string>('');
     const [rsvpDate, setRsvpDate] = useState('');
+    const [isEditing, setIsEditing] = useState<number | null>(null);
 
     useEffect(() => {
         fetchGuests();
@@ -99,17 +267,15 @@ function GuestList({ eventId }: any) {
     };
 
     const addGuest = async () => {
-        if (!firstName) return;
-
-        const fullName = lastName ? `${firstName} ${lastName}` : firstName;
+        if (!name) return;
 
         try {
             const token = localStorage.getItem('token');
             const response = await axios.post(
                 `/api/events/${eventId}/guests`,
                 {
-                    name: fullName,
-                    image: image,
+                    name,
+                    image,
                     rsvpDate: rsvpDate || null
                 },
                 {
@@ -122,14 +288,59 @@ function GuestList({ eventId }: any) {
             setGuests([...guests, response.data]);
 
             // Reset form fields
-            setFirstName('');
-            setLastName('');
+            setName('');
             setImage('');
             setRsvpDate('');
 
         } catch (error) {
             console.error('Error adding guest:', error);
         }
+    };
+
+    const updateGuest = async (guestId: number) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.put(
+                `/api/events/${eventId}/guests/${guestId}`,
+                {
+                    name,
+                    image,
+                    rsvpDate: rsvpDate || null
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            setGuests(guests.map(guest =>
+                guest.id === guestId ? response.data : guest
+            ));
+
+            // Reset form and editing state
+            setName('');
+            setImage('');
+            setRsvpDate('');
+            setIsEditing(null);
+
+        } catch (error) {
+            console.error('Error updating guest:', error);
+        }
+    };
+
+    const startEditing = (guest: Guest) => {
+        setName(guest.name);
+        setImage(guest.image || '');
+        setRsvpDate(guest.rsvpDate ? new Date(guest.rsvpDate).toISOString().split('T')[0] : '');
+        setIsEditing(guest.id);
+    };
+
+    const cancelEditing = () => {
+        setName('');
+        setImage('');
+        setRsvpDate('');
+        setIsEditing(null);
     };
 
     const removeGuest = async (guestId: number) => {
@@ -160,21 +371,6 @@ function GuestList({ eventId }: any) {
         }
     };
 
-    // Split the name into first and last name for display
-    const getNameParts = (fullName : string) => {
-        const parts = fullName.split(' ');
-        if (parts.length > 1) {
-            return {
-                firstName: parts[0],
-                lastName: parts.slice(1).join(' ')
-            };
-        }
-        return {
-            firstName: fullName,
-            lastName: ''
-        };
-    };
-
     return (
         <div className={styles.guestListContainer}>
             <h3>Guest Management</h3>
@@ -183,16 +379,9 @@ function GuestList({ eventId }: any) {
             <div className={styles.formContainer}>
                 <input
                     type="text"
-                    placeholder="First Name"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className={styles.inputField}
-                />
-                <input
-                    type="text"
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Full Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     className={styles.inputField}
                 />
                 <input
@@ -206,17 +395,38 @@ function GuestList({ eventId }: any) {
                     value={rsvpDate}
                     onChange={(e) => setRsvpDate(e.target.value)}
                     className={styles.inputField}
+                    placeholder="RSVP Date"
                 />
+
+                <div className={styles.buttonContainer}>
+                    {isEditing ? (
+                        <>
+                            <button
+                                onClick={() => updateGuest(isEditing)}
+                                className={`${styles.button} ${styles.updateButton}`}
+                            >
+                                ✓ Update Guest
+                            </button>
+                            <button
+                                onClick={cancelEditing}
+                                className={`${styles.button} ${styles.cancelButton}`}
+                            >
+                                ✕ Cancel
+                            </button>
+                        </>
+                    ) : (
+                        <button
+                            onClick={addGuest}
+                            className={`${styles.button} ${styles.addButton}`}
+                        >
+                            ➕ Add Guest
+                        </button>
+                    )}
+                </div>
             </div>
 
             <div className={styles.guestCount}>
                 <strong>Total Guests:</strong> {guests.length}
-            </div>
-
-            <div className={styles.buttonContainer}>
-                <button onClick={addGuest} className={`${styles.button} ${styles.addButton}`}>
-                    ➕ Add Guest
-                </button>
             </div>
 
             {isLoading ? (
@@ -224,25 +434,30 @@ function GuestList({ eventId }: any) {
             ) : (
                 <div className={styles.guestList}>
                     {guests.length > 0 ? (
-                        guests.map((guest: Guest) => {
-                            const { firstName, lastName } = getNameParts(guest.name);
-                            return (
-                                <div key={guest.id} className={styles.guestCard}>
-                                    <div className={styles.imageWrapper}>
-                                        {guest.image ? (
-                                            <Image src={guest.image} width={50}  height={50} alt="Guest" className={styles.guestImage} />
-                                        ) : (
-                                            <div className={styles.defaultImage}>
-                                                {firstName.charAt(0)}
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className={styles.details}>
-                                        <p className={styles.guestName}>{firstName} {lastName}</p>
-                                        <p className={styles.eventDate}>
-                                            📅 {guest.rsvpDate ? new Date(guest.rsvpDate).toLocaleDateString() : 'No RSVP date'}
-                                        </p>
-                                    </div>
+                        guests.map((guest: Guest) => (
+                            <div key={guest.id} className={styles.guestCard}>
+                                <div className={styles.imageWrapper}>
+                                    {guest.image ? (
+                                        <Image src={guest.image} width={50} height={50} alt="Guest" className={styles.guestImage} />
+                                    ) : (
+                                        <div className={styles.defaultImage}>
+                                            {guest.name.charAt(0)}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className={styles.details}>
+                                    <p className={styles.guestName}>{guest.name}</p>
+                                    <p className={styles.eventDate}>
+                                        📅 {guest.rsvpDate ? new Date(guest.rsvpDate).toLocaleDateString() : 'No RSVP date'}
+                                    </p>
+                                </div>
+                                <div className={styles.actions}>
+                                    <button
+                                        onClick={() => startEditing(guest)}
+                                        className={styles.editButton}
+                                    >
+                                        ✏️
+                                    </button>
                                     <button
                                         onClick={() => removeGuest(guest.id)}
                                         className={styles.removeButton}
@@ -250,8 +465,8 @@ function GuestList({ eventId }: any) {
                                         ❌
                                     </button>
                                 </div>
-                            );
-                        })
+                            </div>
+                        ))
                     ) : (
                         <p className={styles.noGuests}>No guests added yet</p>
                     )}

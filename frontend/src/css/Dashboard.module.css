@@ -24,8 +24,6 @@
     margin-right: auto;
 }
 
-
-
 .header {
     width: 90%;
     max-width: 1200px;
@@ -121,6 +119,7 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
     animation: slideInFromRight 0.5s ease-out;
     position: relative;
+    margin-bottom: 50px;
 }
 
 .eventsSection:before {
@@ -224,6 +223,21 @@
     -webkit-box-orient: vertical;
 }
 
+.eventDate {
+    color: #4f46e5;
+    font-weight: 500;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.eventLocation {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 5px 0 10px;
+}
+
 .eventCardFooter {
     display: flex;
     justify-content: space-between;
@@ -297,19 +311,12 @@
     color: #111827;
 }
 
-.modalFooter {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 16px 24px;
-    border-top: 1px solid #eaeaea;
-}
-
 .createEventForm {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 0;
+    padding: 20px 0;
+    overflow-y: auto;
 }
 
 .formGroup {
@@ -317,14 +324,19 @@
     flex-direction: column;
     gap: 8px;
     padding: 0 24px;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 }
 
 .formGroup label {
     font-weight: 500;
     color: #111827;
     font-size: 16px;
-    margin-top: 15px;
+}
+
+.formGroup label::after {
+    content: attr(data-required);
+    color: #e74c3c;
+    margin-left: 4px;
 }
 
 .formGroup input,
@@ -337,10 +349,64 @@
     width: 100%;
     resize: vertical;
     transition: all 0.3s ease;
+    background-color: #fff;
+    color: #111827;
+}
+
+.formGroup input[type="date"] {
+    padding-right: 10px;
+}
+
+.formGroup input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.formGroup input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
 }
 
 .formGroup textarea {
-    height: 150px;
+    min-height: 100px;
+    max-height: 200px;
+}
+
+/* Color picker styles */
+.colorPicker {
+    height: 40px;
+    padding: 0;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+/* Checkbox styling */
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.checkboxLabel input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+/* Form row for side-by-side elements */
+.formRow {
+    display: flex;
+    gap: 15px;
+    padding: 0 24px;
+    margin-bottom: 16px;
+}
+
+.formRow .formGroup {
+    flex: 1;
+    padding: 0;
+    margin-bottom: 0;
 }
 
 /* Adjust the input placeholders */
@@ -355,6 +421,14 @@
     outline: none;
     border-color: #4f46e5;
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid #eaeaea;
 }
 
 .createButton {
@@ -376,7 +450,7 @@
 }
 
 .cancelButton {
-    padding: 0.5rem 1.25rem;
+    padding: 0.75rem 1.5rem;
     border-radius: 0.375rem;
     border: 1px solid #6b7280;
     color: #6b7280;
@@ -468,6 +542,11 @@
     }
 
     .formGroup {
+        padding: 0 10px;
+    }
+
+    .formRow {
+        flex-direction: column;
         padding: 0 10px;
     }
 

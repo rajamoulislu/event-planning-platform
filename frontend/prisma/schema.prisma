@@ -29,12 +29,18 @@ model Event {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
+  startDate   DateTime  // Added field for calendar display
+  endDate     DateTime? // Added field for calendar display
+  location    String?   // Added field for event location
+  url         String?   // Added field for Zoom links or similar
+  isAllDay    Boolean   @default(false) // Added field for all-day events
+  color       String?   // Added field for event color coding
   createdBy   User      @relation(fields: [userId], references: [id])
   userId      Int
-  guests      Guest[]   // Relation to guests of this event
-  tasks       Task[]    // Relation to tasks for this event
-  expenses    Expense[] // Relation to expenses for this event
-  budgets     Budget[]  // Relation to budgets for this event
+  guests      Guest[]   
+  tasks       Task[]    
+  expenses    Expense[] 
+  budgets     Budget[]  
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
@@ -42,12 +48,15 @@ model Event {
 model Guest {
   id        Int       @id @default(autoincrement())
   name      String
-  image     String?   // Optional URL to guest's image
+  email     String?   // Added field for contact
+  phone     String?   // Added field for contact
+  image     String?   
   event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId   Int
   createdBy User      @relation(fields: [userId], references: [id])
   userId    Int
   rsvpDate  DateTime?
+  rsvpStatus String?  // Added field for RSVP status (yes/no/maybe)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -61,6 +70,8 @@ model Task {
   startDate   DateTime
   endDate     DateTime?
   completed   Boolean   @default(false)
+  priority    String?   // Added field for priority (high/medium/low)
+  assignedTo  String?   // Added field for task assignment
   event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId     Int
   createdBy   User      @relation(fields: [userId], references: [id])
@@ -79,7 +90,7 @@ model Budget {
   eventId     Int
   createdBy   User      @relation(fields: [userId], references: [id])
   userId      Int
-  expenses    Expense[] // Relation to expenses within this budget
+  expenses    Expense[] 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -91,7 +102,7 @@ model Expense {
   title       String
   amount      Float
   date        DateTime
-  receipt     String?   // Optional URL to receipt image
+  receipt     String?   
   notes       String?
   event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId     Int
@@ -99,7 +110,7 @@ model Expense {
   budgetId    Int?
   createdBy   User      @relation(fields: [userId], references: [id])
   userId      Int
-  category    String?   // Optional category for expense
+  category    String?   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

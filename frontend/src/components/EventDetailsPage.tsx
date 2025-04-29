@@ -18,28 +18,58 @@ export default function EventDetailsPage() {
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [location, setLocation] = useState('');
+    const [url, setUrl] = useState('');
+    const [isAllDay, setIsAllDay] = useState(false);
+    const [color, setColor] = useState('');
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (eventId) {
-            fetchEventDetails();
+            if (!isNaN(Number(eventId))) {
+                fetchEventDetails();
+            } else {
+                setError("Invalid event ID");
+                setIsLoading(false);
+            }
         }
     }, [eventId]);
 
     const fetchEventDetails = async () => {
         setIsLoading(true);
+        setError(null);
         try {
             const token = localStorage.getItem('token');
+            if (!token) {
+                router.push('/');
+                return;
+            }
+
             const response = await axios.get(`/api/events/${eventId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            setEvent(response.data);
-            setTitle(response.data.title);
-            setDescription(response.data.description);
-        } catch (error) {
+            const eventData = response.data;
+            setEvent(eventData);
+            setTitle(eventData.title || '');
+            setDescription(eventData.description || '');
+            setStartDate(eventData.startDate ? new Date(eventData.startDate).toISOString().split('T')[0] : '');
+            setEndDate(eventData.endDate ? new Date(eventData.endDate).toISOString().split('T')[0] : '');
+            setLocation(eventData.location || '');
+            setUrl(eventData.url || '');
+            setIsAllDay(eventData.isAllDay || false);
+            setColor(eventData.color || '');
+        } catch (error: any) {
             console.error('Error fetching event details:', error);
+            if (error.response?.status === 404) {
+                setError('Event not found. It may have been deleted or you may not have permission to view it.');
+            } else {
+                setError('An error occurred while loading the event. Please try again later.');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -47,11 +77,24 @@ export default function EventDetailsPage() {
 
     const handleSave = async () => {
         if (!event) return;
+        if (!title || !startDate) {
+            alert('Title and start date are required');
+            return;
+        }
 
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.put(`/api/events/${event.id}`,
-                { title, description },
+            const response = await axios.put(`/api/events/${eventId}`,
+                {
+                    title,
+                    description,
+                    startDate,
+                    endDate: endDate || null,
+                    location,
+                    url,
+                    isAllDay,
+                    color
+                },
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -63,6 +106,7 @@ export default function EventDetailsPage() {
             setIsEditing(false);
         } catch (error) {
             console.error('Error updating event:', error);
+            alert('Failed to update event. Please try again.');
         }
     };
 
@@ -72,7 +116,7 @@ export default function EventDetailsPage() {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`/api/events/${event.id}`, {
+            await axios.delete(`/api/events/${eventId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -81,6 +125,7 @@ export default function EventDetailsPage() {
             router.push('/dashboard');
         } catch (error) {
             console.error('Error deleting event:', error);
+            alert('Failed to delete event. Please try again.');
         }
     };
 
@@ -92,8 +137,26 @@ export default function EventDetailsPage() {
         );
     }
 
+    if (error) {
+        return (
+            <div className={styles.errorContainer}>
+                <div className={styles.error}>{error}</div>
+                <button onClick={() => router.push('/dashboard')} className={styles.backButton}>
+                    ← Back to Dashboard
+                </button>
+            </div>
+        );
+    }
+
     if (!event) {
-        return <div className={styles.error}>Event not found</div>;
+        return (
+            <div className={styles.errorContainer}>
+                <div className={styles.error}>Event not found</div>
+                <button onClick={() => router.push('/dashboard')} className={styles.backButton}>
+                    ← Back to Dashboard
+                </button>
+            </div>
+        );
     }
 
     return (
@@ -109,6 +172,7 @@ export default function EventDetailsPage() {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             className={styles.editTitleInput}
+                            required
                         />
                     ) : (
                         event.title
@@ -119,19 +183,127 @@ export default function EventDetailsPage() {
             <div className={styles.contentContainer}>
                 <div className={styles.detailsTab}>
                     {isEditing ? (
-                        <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className={styles.editDescriptionInput}
-                            rows={5}
-                        />
-                    ) : (
-                        <p>{event.description}</p>
-                    )}
+                        <div className={styles.editForm}>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="description">Description</label>
+                                <textarea
+                                    id="description"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    className={styles.editDescriptionInput}
+                                    rows={5}
+                                />
+                            </div>
 
-                    <div className={styles.eventDate}>
-                        <strong>Created:</strong> {new Date(event.createdAt).toLocaleDateString()}
-                    </div>
+                            <div className={styles.formRow}>
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="startDate">Start Date *</label>
+                                    <input
+                                        type="date"
+                                        id="startDate"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        required
+                                        className={styles.dateInput}
+                                    />
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="endDate">End Date</label>
+                                    <input
+                                        type="date"
+                                        id="endDate"
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        className={styles.dateInput}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label htmlFor="location">Location</label>
+                                <input
+                                    type="text"
+                                    id="location"
+                                    value={location}
+                                    onChange={(e) => setLocation(e.target.value)}
+                                    placeholder="Event location"
+                                    className={styles.textInput}
+                                />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label htmlFor="url">URL</label>
+                                <input
+                                    type="url"
+                                    id="url"
+                                    value={url}
+                                    onChange={(e) => setUrl(e.target.value)}
+                                    placeholder="Event URL"
+                                    className={styles.textInput}
+                                />
+                            </div>
+
+                            <div className={styles.formRow}>
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="color">Color</label>
+                                    <input
+                                        type="color"
+                                        id="color"
+                                        value={color}
+                                        onChange={(e) => setColor(e.target.value)}
+                                        className={styles.colorInput}
+                                    />
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                    <label className={styles.checkboxLabel}>
+                                        <input
+                                            type="checkbox"
+                                            checked={isAllDay}
+                                            onChange={(e) => setIsAllDay(e.target.checked)}
+                                            className={styles.checkbox}
+                                        />
+                                        <span>All Day Event</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className={styles.eventDetails}>
+                            <p className={styles.description}>{event.description}</p>
+
+                            {event.startDate && (
+                                <div className={styles.eventMeta}>
+                                    <div className={styles.eventDate}>
+                                        <span className={styles.metaLabel}>Date:</span>
+                                        {new Date(event.startDate).toLocaleDateString()}
+                                        {event.endDate && ` - ${new Date(event.endDate).toLocaleDateString()}`}
+                                        {event.isAllDay && ' (All day)'}
+                                    </div>
+
+                                    {event.location && (
+                                        <div className={styles.eventLocation}>
+                                            <span className={styles.metaLabel}>Location:</span> {event.location}
+                                        </div>
+                                    )}
+
+                                    {event.url && (
+                                        <div className={styles.eventUrl}>
+                                            <span className={styles.metaLabel}>URL:</span>
+                                            <a href={event.url} target="_blank" rel="noopener noreferrer">
+                                                {event.url}
+                                            </a>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            <div className={styles.eventCreated}>
+                                <span className={styles.metaLabel}>Created:</span> {new Date(event.createdAt).toLocaleDateString()}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Feature Cards */}
                     <div className={styles.featureCardContainer}>

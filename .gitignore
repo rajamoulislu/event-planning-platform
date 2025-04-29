@@ -26,5 +26,6 @@ yarn-error.log*
 .Spotlight-V100
 .Trashes
 frontend/.env
+frontend/prisma/migrations
 
 .env

@@ -4,7 +4,9 @@ import { authenticateToken } from '../middleware/auth';
 import loginRouter from '../routes/login';
 import registerRouter from '../routes/register';
 import verifyRouter from '../routes/verify';
-import guestRoutes from '../routes/guestRoutes'; // Import the guest routes
+import eventRoutes from '../routes/eventRoutes';
+import guestRoutes from '../routes/guestRoutes';
+import taskRoutes from '../routes/taskRoutes';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -34,7 +36,9 @@ app.options('*', cors(corsOptions));
 app.use('/api/auth/login', loginRouter);
 app.use('/api/auth/register', registerRouter);
 app.use('/api/verify-token', verifyRouter);
-app.use('/api', guestRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/events', guestRoutes);
+app.use('/api/events', taskRoutes); 
 
 // Protected routes
 app.get('/api/protected', authenticateToken, (req: Request, res: Response) => {
