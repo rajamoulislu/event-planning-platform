@@ -1,0 +1,311 @@
+.container {
+    width: 100%;
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url('/backsss.jpg');
+    background-size: cover;
+    background-position: center;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .title {
+    font-size: 36px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  
+  .guestCount {
+    color: black;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow:white;
+  }
+  
+  .formContainer {
+    width: 100%;
+    max-width: 800px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .inputField {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.3s ease;
+  }
+  
+  .inputField:focus {
+    outline: none;
+    border-color: #5b9bff;
+    background-color: #fafbfe;
+  }
+  
+  .buttonContainer {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+  
+  .button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    text-transform: uppercase;
+  }
+  
+  .addButton {
+    background-color: #5b9bff;
+    color: #fff;
+    border: none;
+  }
+  
+  .removeButton {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+  }
+  
+  .addButton:hover {
+    background-color: #4689d2;
+    transform: scale(1.05);
+  }
+  
+  .removeButton:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+  }
+  
+  .guestList {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+  }
+  
+  .guestCard {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+    background-image: url('https://your-image-url.com/guest-bg.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .guestCard:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .imageWrapper {
+    margin-right: 20px;
+  }
+  
+  .guestImage {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .defaultImage {
+    width: 60px;
+    height: 60px;
+    background-color: #5b9bff;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  
+  .details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .guestName {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .eventDate, .createdBy {
+    font-size: 14px;
+    color: #777;
+  }
+  
+  .noGuests {
+    text-align: center;
+    font-size: 18px;
+    color: #aaa;
+  }
+  
+  @media (max-width: 768px) {
+    .formContainer {
+      grid-template-columns: 1fr;
+    }
+  
+    .buttonContainer {
+      flex-direction: column;
+    }
+  
+    .button {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
+  
+  .container {
+    width: 100%;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+  }
+  
+  .title {
+    font-size: 2rem;
+    text-align: center;
+    color: #333;
+  }
+  
+  .guestCount {
+    margin: 10px 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .inputField {
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .button {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .addButton {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .removeButton {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .guestList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .guestCard {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .imageWrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #eaeaea;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .guestImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .defaultImage {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background-color: #007bff;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .details {
+    flex: 1;
+    margin-left: 20px;
+  }
+  
+  .guestName {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .eventDate,
+  .createdBy {
+    font-size: 1rem;
+    color: #777;
+  }
+  
+  .noGuests {
+    font-size: 1rem;
+    color: #999;
+    text-align: center;
+  }
+  

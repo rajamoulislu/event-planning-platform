@@ -1,0 +1,153 @@
+/* Background & Layout */
+.container {
+    background-color: #f0f4f8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+/* Header */
+.header {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: #ffffff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    margin-top: 30px;
+    border-radius: 15px;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: 600;
+    color: #2a3d66;
+}
+
+.logoutButton {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.logoutButton:hover {
+    background: #c0392b;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    margin-top: 40px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.heroImage {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.heroText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 25px 40px;
+    border-radius: 10px;
+}
+
+/* Features Section */
+.features {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    max-width: 1200px;
+    margin-top: 50px;
+}
+
+.featureBox {
+    width: 30%;
+    background: #ffffff;
+    padding: 25px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.featureBox:hover {
+    transform: translateY(-5px);
+    background-color: #f1f8fc;
+}
+
+.featureBox h3 {
+    font-size: 20px;
+    color: #34495e;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.featureBox p {
+    color: #7f8c8d;
+}
+
+.featureImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Event Gallery */
+.gallery {
+    width: 90%;
+    max-width: 1200px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.gallery h2 {
+    font-size: 24px;
+    color: #34495e;
+    margin-bottom: 20px;
+}
+
+.imageGrid {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.imageGrid img {
+    width: 32%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.imageGrid img:hover {
+    transform: scale(1.05);
+}

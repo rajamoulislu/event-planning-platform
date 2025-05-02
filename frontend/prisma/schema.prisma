@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  events    Event[]   
+  guests    Guest[]   
+  tasks     Task[]    
+  expenses  Expense[] 
+  budgets   Budget[]  
+}
+
+model Event {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  createdBy   User      @relation(fields: [userId], references: [id])
+  userId      Int
+  guests      Guest[]   // Relation to guests of this event
+  tasks       Task[]    // Relation to tasks for this event
+  expenses    Expense[] // Relation to expenses for this event
+  budgets     Budget[]  // Relation to budgets for this event
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Guest {
+  id        Int       @id @default(autoincrement())
+  name      String
+  image     String?   // Optional URL to guest's image
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId   Int
+  createdBy User      @relation(fields: [userId], references: [id])
+  userId    Int
+  rsvpDate  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([eventId])
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  completed   Boolean   @default(false)
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId     Int
+  createdBy   User      @relation(fields: [userId], references: [id])
+  userId      Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([eventId])
+}
+
+model Budget {
+  id          Int       @id @default(autoincrement())
+  name        String
+  totalAmount Float
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId     Int
+  createdBy   User      @relation(fields: [userId], references: [id])
+  userId      Int
+  expenses    Expense[] // Relation to expenses within this budget
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([eventId])
+}
+
+model Expense {
+  id          Int       @id @default(autoincrement())
+  title       String
+  amount      Float
+  date        DateTime
+  receipt     String?   // Optional URL to receipt image
+  notes       String?
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId     Int
+  budget      Budget?   @relation(fields: [budgetId], references: [id])
+  budgetId    Int?
+  createdBy   User      @relation(fields: [userId], references: [id])
+  userId      Int
+  category    String?   // Optional category for expense
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([eventId])
+  @@index([budgetId])
+}
