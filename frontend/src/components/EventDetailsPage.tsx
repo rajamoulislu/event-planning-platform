@@ -277,8 +277,8 @@ export default function EventDetailsPage() {
                                 <div className={styles.eventMeta}>
                                     <div className={styles.eventDate}>
                                         <span className={styles.metaLabel}>Date:</span>
-                                        {new Date(event.startDate).toLocaleDateString()}
-                                        {event.endDate && ` - ${new Date(event.endDate).toLocaleDateString()}`}
+                                        {new Date(event.startDate).toLocaleDateString(undefined, { timeZone: 'UTC' })}
+                                        {event.endDate && ` - ${new Date(event.endDate).toLocaleDateString(undefined, { timeZone: 'UTC' })}`}
                                         {event.isAllDay && ' (All day)'}
                                     </div>
 
@@ -300,7 +300,7 @@ export default function EventDetailsPage() {
                             )}
 
                             <div className={styles.eventCreated}>
-                                <span className={styles.metaLabel}>Created:</span> {new Date(event.createdAt).toLocaleDateString()}
+                                <span className={styles.metaLabel}>Created:</span> {new Date(event.createdAt).toLocaleDateString(undefined, { timeZone: 'UTC' })}
                             </div>
                         </div>
                     )}

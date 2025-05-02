@@ -448,7 +448,7 @@ function GuestList({ eventId }: { eventId: string }) {
                                 <div className={styles.details}>
                                     <p className={styles.guestName}>{guest.name}</p>
                                     <p className={styles.eventDate}>
-                                        📅 {guest.rsvpDate ? new Date(guest.rsvpDate).toLocaleDateString() : 'No RSVP date'}
+                                        📅 {guest.rsvpDate ? new Date(guest.rsvpDate).toLocaleDateString(undefined, { timeZone: 'UTC' }) : 'No RSVP date'}
                                     </p>
                                 </div>
                                 <div className={styles.actions}>

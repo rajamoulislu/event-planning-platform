@@ -7,6 +7,8 @@ import verifyRouter from '../routes/verify';
 import eventRoutes from '../routes/eventRoutes';
 import guestRoutes from '../routes/guestRoutes';
 import taskRoutes from '../routes/taskRoutes';
+import budgetRoutes from '../routes/budgetRoutes';
+
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -39,6 +41,7 @@ app.use('/api/verify-token', verifyRouter);
 app.use('/api/events', eventRoutes);
 app.use('/api/events', guestRoutes);
 app.use('/api/events', taskRoutes); 
+app.use('/api/events', budgetRoutes); 
 
 // Protected routes
 app.get('/api/protected', authenticateToken, (req: Request, res: Response) => {

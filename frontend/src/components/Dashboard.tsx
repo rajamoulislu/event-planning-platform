@@ -117,12 +117,12 @@ export default function Dashboard() {
                                 <p>{event.description}</p>
                                 {event.startDate && (
                                     <p className={styles.eventDate}>
-                                        📅 {new Date(event.startDate).toLocaleDateString()}
+                                        📅 {new Date(event.startDate).toLocaleDateString(undefined, { timeZone: 'UTC' })}
                                         {event.isAllDay ? ' (All day)' : ''}
                                     </p>
                                 )}
                                 <div className={styles.eventCardFooter}>
-                                    <span>{new Date(event.createdAt).toLocaleDateString()}</span>
+                                    <span>{new Date(event.createdAt).toLocaleDateString(undefined, { timeZone: 'UTC' })}</span>
                                     <span>{event._count?.guests || 0} guests</span>
                                 </div>
                             </div>

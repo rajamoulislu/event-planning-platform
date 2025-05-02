@@ -418,6 +418,7 @@
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
     transition: all 0.3s ease;
+    color: #111827;
 }
 
 .textInput:focus,
@@ -437,6 +438,7 @@
     font-family: inherit;
     min-height: 100px;
     transition: all 0.3s ease;
+    color: #111827;
 }
 
 .editDescriptionInput:focus {
