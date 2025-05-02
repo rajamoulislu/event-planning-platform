@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  events    Event[]   
+  guests    Guest[]   
+  tasks     Task[]    
+  expenses  Expense[] 
+  budgets   Budget[]  
+}
+
+model Event {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  startDate   DateTime  // Added field for calendar display
+  endDate     DateTime? // Added field for calendar display
+  location    String?   // Added field for event location
+  url         String?   // Added field for Zoom links or similar
+  isAllDay    Boolean   @default(false) // Added field for all-day events
+  color       String?   // Added field for event color coding
+  createdBy   User      @relation(fields: [userId], references: [id])
+  userId      Int
+  guests      Guest[]   
+  tasks       Task[]    
+  expenses    Expense[] 
+  budgets     Budget[]  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Guest {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String?   // Added field for contact
+  phone     String?   // Added field for contact
+  image     String?   
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId   Int
+  createdBy User      @relation(fields: [userId], references: [id])
+  userId    Int
+  rsvpDate  DateTime?
+  rsvpStatus String?  // Added field for RSVP status (yes/no/maybe)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([eventId])
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  completed   Boolean   @default(false)
+  priority    String?   // Added field for priority (high/medium/low)
+  assignedTo  String?   // Added field for task assignment
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId     Int
+  createdBy   User      @relation(fields: [userId], references: [id])
+  userId      Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([eventId])
+}
+
+model Budget {
+  id          Int       @id @default(autoincrement())
+  name        String
+  totalAmount Float
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId     Int
+  createdBy   User      @relation(fields: [userId], references: [id])
+  userId      Int
+  expenses    Expense[] 
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([eventId])
+}
+
+model Expense {
+  id          Int       @id @default(autoincrement())
+  title       String
+  amount      Float
+  date        DateTime
+  receipt     String?   
+  notes       String?
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId     Int
+  budget      Budget?   @relation(fields: [budgetId], references: [id])
+  budgetId    Int?
+  createdBy   User      @relation(fields: [userId], references: [id])
+  userId      Int
+  category    String?   
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([eventId])
+  @@index([budgetId])
+}

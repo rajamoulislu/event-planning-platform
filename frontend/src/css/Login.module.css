@@ -1,0 +1,144 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(249, 250, 251);
+}
+
+.formContainer {
+    max-width: 28rem;
+    width: 100%;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+.title {
+    text-align: center;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #0866FF;
+    margin-bottom: 2rem;
+}
+
+.error {
+    color: rgb(239, 68, 68);
+    text-align: center;
+}
+
+.form {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.input {
+    margin-top: 0.25rem;
+    display: block;
+    width: 100%;
+    border-radius: 0.375rem;
+    border: 1px solid rgb(209, 213, 219);
+    padding: 0.5rem;
+    color: black;
+}
+
+.submitButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: white;
+    background-color: rgb(37, 99, 235);
+}
+
+.submitButton:hover {
+    background-color: rgb(29, 78, 216);
+}
+
+.registerContainer {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.registerLink {
+    color: rgb(37, 99, 235);
+}
+
+.registerLink:hover {
+    color: rgb(30, 64, 175);
+}
+
+.loader {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 6rem;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.loader:before,
+.loader:after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    animation: pulsOut 1.8s ease-in-out infinite;
+    filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.75));
+}
+
+.loader:before {
+    width: 100%;
+    padding-bottom: 100%;
+    box-shadow: inset 0 0 0 1rem #fff;
+    animation-name: pulsIn;
+}
+
+.loader:after {
+    width: calc(100% - 2rem);
+    padding-bottom: calc(100% - 2rem);
+    box-shadow: 0 0 0 0 #fff;
+}
+
+@keyframes pulsIn {
+    0% {
+        box-shadow: inset 0 0 0 1rem #fff;
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        box-shadow: inset 0 0 0 0 #fff;
+        opacity: 0;
+    }
+}
+
+@keyframes pulsOut {
+
+    0%,
+    50% {
+        box-shadow: 0 0 0 0 #fff;
+        opacity: 0;
+    }
+
+    100% {
+        box-shadow: 0 0 0 1rem #fff;
+        opacity: 1;
+    }
+}
