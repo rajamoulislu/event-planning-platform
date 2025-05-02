@@ -6,6 +6,7 @@ import prisma from '../../../frontend/src/prisma/PrismaClient';
 
 const router: Router = express.Router();
 
+// Get budget for a specific event
 router.get('/:eventId/budget', authenticateToken, (req: Request, res: Response) => {
     const fetchBudget = async () => {
         try {
@@ -47,6 +48,7 @@ router.get('/:eventId/budget', authenticateToken, (req: Request, res: Response) 
     fetchBudget();
 });
 
+// Create a new budget for an event
 router.post('/:eventId/budget', authenticateToken, (req: Request, res: Response) => {
     const createBudget = async () => {
         try {
@@ -62,6 +64,7 @@ router.post('/:eventId/budget', authenticateToken, (req: Request, res: Response)
                 return res.status(400).json({ message: 'Total amount is required' });
             }
 
+            // Check if event exists and belongs to user
             const event = await prisma.event.findUnique({
                 where: { id: eventId },
                 select: { userId: true }
